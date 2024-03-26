@@ -26,10 +26,22 @@ class Editor {
       this.editor.insertText(index, this.copyBuffer + " ", this.editor.getFormat(), "api")
       return "Pasted"
     }))
-    this.vcs.addCommand(new Command("make text @format",(style)=>{
-      this.editor.format(style, true, "api")
-      return "Make Text " + style
-    },["@format"]));
+    this.vcs.addCommand(new Command("make text @format", (style) => {
+      console.log("Received style:", style); // Debugging line
+      if (style === "bold") {
+        this.editor.format("bold", true, "api");
+        return "Make Text Bold";
+      } else if (style === "italic") {
+        this.editor.format("italic", true, "api");
+        return "Make Text Italic";
+      } else {
+        // Handle other formatting styles
+        this.editor.format(style, true, "api");
+        return "Make Text " + style;
+      }
+    }, ["@format"]));
+    
+    
 
     this.vcs.addCommand(new Command("make size @size",(size)=>{
       this.editor.format("size", size, "api")
