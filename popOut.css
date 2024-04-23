@@ -1,0 +1,108 @@
+#geno-pop {
+  display: block;
+  width: 300px;
+  right: 5px;
+  bottom: 100px;
+  z-index: 2147483646;
+  position: fixed;
+  margin: 0px 0px 0px 0px;
+  /*transition: right 0.5s ease-in-out;*/
+  animation: fadeout 1s ease-in-out forwards;
+}
+#geno-history-entry{
+  text-align: center;
+  border-width: 2px 2px 2px 2px;
+  border-style: solid;
+  border-color: #90bfee;
+  border-radius: 10px 10px 10px 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+
+@keyframes fadeout {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+#geno-pop.visible {
+  right: 5px;
+  animation: fadein 1s ease-in-out forwards;
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+#geno-notification {
+  overflow: hidden;
+  height: 100px;
+  background-color: white;
+  border-width: 2px 2px 2px 2px;
+  border-style: solid;
+  border-color: #90bfee;
+  border-radius: 10px 10px 10px 10px;
+}
+
+#geno-pop-display {
+  display: inline-block;
+  background-color: #f7f7f7;
+  height: 100%;
+  width: 66.65%;
+  text-align: center;
+  float:left;
+}
+
+#geno-pop-icon-div {
+  float:left;
+  position: relative;
+  top: 0%;
+  left: 0%;
+  display: inline-block;
+  background-color: #e0e0e0;
+  height: 100%;
+  width: 33.33%;
+}
+
+#geno-red-dot {
+  background-color: #e8405a;
+  position: absolute;
+  display: block;
+  height: 90%;
+  width: 90%;
+  top: 5%;
+  left: 5%;
+  border-radius: 50%;
+  animation-name: grow;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+}
+
+@keyframes grow {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(0.4);
+  }
+}
+
+#geno-pop-icon {
+  position: relative;
+  max-height: 60%;
+  top: 20%;
+  display: block;
+  margin: auto;
+}
