@@ -41,6 +41,7 @@ class Editor {
       }
     }, ["@format"]));
     
+  
     
 
     this.vcs.addCommand(new Command("make size @size",(size)=>{
@@ -53,15 +54,7 @@ class Editor {
       return "Make Heading Size " + size
     },["@size"]));
 
-    this.vcs.addCommand(new Command("align to the @pos",(pos)=>{
-      this.editor.format("align", pos, "api")
-      return "Align to " + pos
-    } ,["@pos"]))
-
-    this.vcs.addCommand(new Command("align to @pos",(pos)=>{
-      this.editor.format("align", pos, "api")
-      return "Align to " + pos
-    },["@pos"]))
+    
 
     this.vcs.addCommand(new Command("remove format",()=>{
       this.editor.removeFormat(this.editor.getLength() - 2, 1)
@@ -130,18 +123,173 @@ class Editor {
       return "Next " + num + " Paragraphs Selected"
     },["@num"]))
 
+    this.vcs.addCommand(new Command("change text colour to @color", (color) => {
+      this.editor.format("color", color, "api");
+      return "Text Color Changed to " + color;
+    }, ["@color"]));
+
+
     this.vcs.addCommand(new Command("next paragraph",()=>{
       this.remove_selection();
       this.next_paragraph(1, false)
       return "Cursor Moved to Next Paragraph"
     }))
+
     this.vcs.addCommand(new Command("next @num paragraphs",(num)=>{
       num = WordToInt[num]
       this.remove_selection();
       this.next_paragraph(num, false)
       return "Cursor Moved to Next " + num + " Paragraphs"
     },["@num"]))
+
+    this.vcs.addCommand(new Command("insert text @text", (text) => {
+      let { index } = this.editor.getSelection();
+      this.editor.insertText(index, text, "api");
+      return "Inserted Text: " + text;
+    }, ["@text"]));
+
+    this.vcs.addCommand(new Command("select text @text", (text) => {
+      let content = this.editor.getText();
+      let index = content.indexOf(text);
+      if (index !== -1) {
+        this.editor.setSelection(index, text.length, "api");
+        return "Selected Text: " + text;
+      } else {
+        return "Text not found: " + text;
+      }
+    }, ["@text"]));
+
+    this.vcs.addCommand(new Command("replace @oldText with @newText", (oldText, newText) => {
+      let content = this.editor.getText();
+      let updatedContent = content.replace(new RegExp(oldText, 'g'), newText);
+      this.editor.setText(updatedContent, "api");
+      return "Replaced Text: " + oldText + " with " + newText;
+    }, ["@oldText", "@newText"]));
+
+    this.vcs.addCommand(new Command("undo", () => {
+      this.editor.history.undo();
+      return "Undo";
+    }));
+    
+    this.vcs.addCommand(new Command("redo", () => {
+      this.editor.history.redo();
+      return "Redo";
+    }));
+
+    this.vcs.addCommand(new Command("change background colour to @color", (color) => {
+      this.editor.format("background", color, "api");
+      return "Background Color Changed to " + color;
+    }, ["@color"]));
+    
+    this.vcs.addCommand(new Command("insert date", () => {
+      let currentDate = new Date().toLocaleDateString();
+      this.editor.insertText(this.editor.getSelection().index, currentDate, "api");
+      return "Inserted Date: " + currentDate;
+    }));
+    
+    this.vcs.addCommand(new Command("insert time", () => {
+      let currentTime = new Date().toLocaleTimeString();
+      this.editor.insertText(this.editor.getSelection().index, currentTime, "api");
+      return "Inserted Time: " + currentTime;
+    }));
+    this.vcs.addCommand(new Command("indent", () => {
+      this.editor.format('indent', '+1', 'api');
+      return "Indented Text";
+    }));
+    
+    this.vcs.addCommand(new Command("outdent", () => {
+      this.editor.format('indent', '-1', 'api');
+      return "Outdented Text";
+    }));
+
+    this.vcs.addCommand(new Command("align left", () => {
+      this.editor.format('align', 'left', 'api');
+      return "Aligned Left";
+    }));
+    
+    this.vcs.addCommand(new Command("align centre", () => {
+      this.editor.format('align', 'center', 'api');
+      return "Aligned Center";
+    }));
+    
+    this.vcs.addCommand(new Command("align right", () => {
+      this.editor.format('align', 'right', 'api');
+      return "Aligned Right";
+    }));
+    
+    this.vcs.addCommand(new Command("align justify", () => {
+      this.editor.format('align', 'justify', 'api');
+      return "Aligned Justify";
+    }));
+    this.vcs.addCommand(new Command("make text bold", () => {
+      this.editor.format('bold', true, 'api');
+      return "Made Text Bold";
+    }));
+    
+    this.vcs.addCommand(new Command("make text Italic", () => {
+      this.editor.format('italic', true, 'api');
+      return "Made Text Italic";
+    }));
+    
+    this.vcs.addCommand(new Command("make text underline", () => {
+      this.editor.format('underline', true, 'api');
+      return "Made Text Underline";
+    }));
+    
+    this.vcs.addCommand(new Command("make text Strike", () => {
+      this.editor.format('strike', true, 'api');
+      return "Made Text Strike";
+    }));
+
+   
+    this.vcs.addCommand(new Command("toggle block", () => {
+      const format = this.editor.getFormat();
+      if (format['blockquote']) {
+        this.editor.format('blockquote', false, 'api'); // Remove blockquote format
+        return "Removed Blockquote";
+      } else {
+        this.editor.format('blockquote', true, 'api'); // Add blockquote format
+        return "Added Blockquote";
+      }
+    }));
+    
+    this.vcs.addCommand(new Command("toggle code block", () => {
+      const format = this.editor.getFormat();
+      if (format['code-block']) {
+        this.editor.format('code-block', false, 'api'); // Remove code block format
+        return "Removed Code Block";
+      } else {
+        this.editor.format('code-block', true, 'api'); // Add code block format
+        return "Added Code Block";
+      }
+    }));
+    
+    this.vcs.addCommand(new Command("toggle numbering list", () => {
+      const format = this.editor.getFormat();
+      if (format.list === 'ordered') {
+        this.editor.format('list', false, 'api');
+        return "Removed Numbering";
+      } else {
+        this.editor.format('list', 'ordered', 'api');
+        return "Applied Numbering";
+      }
+    }));
+
+    this.vcs.addCommand(new Command("toggle Bullet list", () => {
+      const format = this.editor.getFormat();
+      if (format.list === 'bullet') {
+          this.editor.format('list', false, 'api'); // Remove bullet list format
+          return "Removed Bullet List";
+      } else {
+          this.editor.format('list', 'bullet', 'api'); // Add bullet list format
+          return "Changed to Bullet List";
+      }
+  }));
+  
+  
+    
   }
+  
 
   delete_text() {
     var e = this.editor;
@@ -313,7 +461,7 @@ var toolbarOptions = [['bold', 'italic', 'underline', 'strike'], // toggled butt
   'header': [1, 2, 3, 4, 5, 6, false]
 }], [{
   'color': []
-}, {
+}], [{
   'background': []
 }], // dropdown with defaults from theme
 [{
@@ -333,3 +481,4 @@ WordToInt={
   "eight":8,
   "nine":9
 }
+
